@@ -5,7 +5,7 @@ Image processing API handles different image processing tasks using the methods 
 The following methods are implemented in the API in v1.0.0
 
 ## License 
-- GNU General Purpose License v3.0
+- [GNU General Purpose License v3.0](https://github.com/anantakrroy/imageprocessing_api/blob/master/LICENSE.md)
 
 ## Methods
 
