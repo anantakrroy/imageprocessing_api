@@ -22,3 +22,13 @@ The following methods are implemented in the API in v1.0.0
 | width    | <code>number</code> |
 | height   | <code>number</code> |
 | filename | <code>string</code> |
+
+- <a name="metadata">Return image information of input image</a>
+
+`metadata(filename)` ⇒ <code>Object</code>
+**Kind**: global function
+
+| Param | Type |
+| --- | --- |
+| filename | <code>string</code> |
+
