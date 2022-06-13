@@ -3,9 +3,12 @@ import sharp from "sharp";
 import fs from "fs";
 import { promises as fspromises } from "fs";
 import resize from "../utils/resize";
+import resizeToFormat from "../utils/resizeToFormat";
+import metadata from "../utils/metadata";
 import Info from "../interface/info";
 
 const routes = express.Router();
+const dir = "thumbs"; // Root folder to save resized images
 
 // Home route
 routes.get("/", (req: express.Request, res: express.Response) => {
@@ -13,9 +16,7 @@ routes.get("/", (req: express.Request, res: express.Response) => {
 });
 
 // resize image only jpg
-routes.get("/resize", async (req: express.Request, res: express.Response) => {
-  const filename = req.query.filename + ".jpg";
-  const dir = "thumbs";
+routes.get("/resize", async (req: express.Request, res: express.Response) => {  const filename = req.query.filename + ".jpg";
   const width = Number(req.query.width as unknown);
   const height = Number(req.query.height as unknown);
   try {
@@ -72,8 +73,81 @@ routes.get("/resize", async (req: express.Request, res: express.Response) => {
 });
 
 //  getimage metadata
+routes.get(
+  "/metadata/:filename",
+  async (req: express.Request, res: express.Response) => {
+    const inputFile = "./assets/" + req.params.filename + ".jpg";
+    try {
+      if (fs.existsSync(inputFile)) {
+        const inputImageData = await metadata(inputFile);
+        res.json(inputImageData);
+      } else {
+        res.json({message : "File does not exist !"});
+      }
+    } catch (err) {
+      res.json(err);
+    }
+  }
+);
 
-//  resize image (all formats)
+//  resize image to a different format
+routes.get("/resize/format", async(req: express.Request, res: express.Response) => {
+  const format = req.query.format as string;
+  const filename = req.query.filename as string;
+  const width = Number(req.query.width as unknown);
+  const height = Number(req.query.height as unknown);
+  try {
+    if (fs.existsSync("./" + dir)) {
+      if (fs.existsSync(`./${dir}/${filename}.${format}`)) {
+        const file = fs.readFileSync(`./${dir}/${filename}.${format}`, {
+          encoding: "base64",
+        });
+        const image = Buffer.from(file, "base64");
+        res.sendFile(
+          `${filename}`,
+          {
+            root: "thumbs",
+            headers: {
+              "Content-Type": `image/${format}`,
+              "Content-Length": image.length,
+            },
+          },
+          function (err) {
+            if (err) {
+              res.status(400).json({
+                error: err.name,
+                detail: err.message,
+              });
+            } else {
+              res.status(200).end();
+            }
+          }
+        );
+      } else {
+        await resizeToFormat(filename, width, height, format)
+          .then((info: Info) =>
+            res.json({
+              message: "File resize successful",
+              ...info,
+            })
+          )
+          .catch((err) => res.status(400).json({ message: `${err}` }));
+      }
+    } else {
+      await fspromises.mkdir("thumbs");
+      await resizeToFormat(filename, width, height, format)
+        .then((info: Info) =>
+          res.json({
+            message: "File resize successful",
+            ...info,
+          })
+        )
+        .catch((err) => res.status(400).json({ message: `${err}` }));
+    }
+  } catch (err) {
+    res.status(400).json({ message: `${err}` });
+  }
+})
 
 // pad image with custom color
 
