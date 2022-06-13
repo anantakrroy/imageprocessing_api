@@ -1,4 +1,5 @@
 import sharp from "sharp";
+import Info from "../interface/info";
 
 // resize to specific width and height
 /**
@@ -13,11 +14,13 @@ const resize = async (
   filename: string,
   width: number,
   height: number
-): Promise<{format: string, width: number, height: number}> => {
-  const promise =  await sharp(`assets/${filename}`).resize({
-    width: width,
-    height: height,
-  }).toFile(`./thumbs/${filename}`);
+): Promise<Info> => {
+  const promise = await sharp(`assets/${filename}`)
+    .resize({
+      width: width,
+      height: height,
+    })
+    .toFile(`./thumbs/${filename}`);
   return promise;
 };
 
