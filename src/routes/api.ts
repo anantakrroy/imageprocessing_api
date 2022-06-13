@@ -3,6 +3,7 @@ import sharp from "sharp";
 import fs from "fs";
 import { promises as fspromises } from "fs";
 import resize from "../utils/resize";
+import Info from "../interface/info";
 
 const routes = express.Router();
 
@@ -19,25 +20,54 @@ routes.get("/resize", async (req: express.Request, res: express.Response) => {
   const height = Number(req.query.height as unknown);
   try {
     if (fs.existsSync("./" + dir)) {
-      await resize(filename, width, height)
-        .then((info: { format: string; width: number; height: number }) =>
-          res.send(`File resize successful >> Format : ${info.format}
-        Width : ${info.width}px Height : ${info.height}px`)
-        )
-        .catch((err) => res.send(`Error >>> ${err}`));
+      if (fs.existsSync(`./${dir}/${filename}`)) {
+        const file = fs.readFileSync(`./${dir}/${filename}`, {
+          encoding: "base64",
+        });
+        const image = Buffer.from(file, "base64");
+        res.sendFile(
+          `${filename}`,
+          {
+            root: "thumbs",
+            headers: {
+              "Content-Type": "image/jpg",
+              "Content-Length": image.length,
+            },
+          },
+          function (err) {
+            if (err) {
+              res.status(400).json({
+                error: err.name,
+                detail: err.message,
+              });
+            } else {
+              res.status(200).end();
+            }
+          }
+        );
+      } else {
+        await resize(filename, width, height)
+          .then((info: Info) =>
+            res.json({
+              message: "File resize successful",
+              ...info,
+            })
+          )
+          .catch((err) => res.status(400).json({ message: `${err}` }));
+      }
     } else {
       await fspromises.mkdir("thumbs");
       await resize(filename, width, height)
-        .then((info) =>
-          res.send(`File resize successful >> Format : ${info.format}
-        Width : ${info.width}px Height : ${info.height}px`)
+        .then((info: Info) =>
+          res.json({
+            message: "File resize successful",
+            ...info,
+          })
         )
-        .catch((err) => res.send(`Error >>> ${err}`));
+        .catch((err) => res.status(400).json({ message: `${err}` }));
     }
-    // res.json(`File resized !!!`);
   } catch (err) {
-    console.log(`${err}`);
-    throw err;
+    res.status(400).json({ message: `${err}` });
   }
 });
 
