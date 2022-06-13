@@ -20,7 +20,7 @@ const resize = async (
       width: width,
       height: height,
     })
-    .toFile(`./thumbs/${filename}_${width}x${height}`);
+    .toFile(`./thumbs/${width}x${height}_${filename}`);
   return promise;
 };
 
