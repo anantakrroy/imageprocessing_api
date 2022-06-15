@@ -21,6 +21,7 @@ routes.get("/resize", async (req: express.Request, res: express.Response) => {
   const height = Number(req.query.height as unknown);
   try {
     if (!fs.existsSync("./" + dir)) fs.mkdirSync(dir);
+    // If image already exists, read from the disk, no processing done
     if (fs.existsSync(`./${dir}/${width}x${height}_${filename}`)) {
       const file = fs.readFileSync(`./${dir}/${width}x${height}_${filename}`, {
         encoding: "base64",
@@ -35,7 +36,7 @@ routes.get("/resize", async (req: express.Request, res: express.Response) => {
             "Content-Length": image.length,
           },
         },
-        (err) => {
+        function(err){
           if (err) {
             res.status(400).json({
               error: err.name,
@@ -115,8 +116,43 @@ routes.get("/rotate", async (req: express.Request, res: express.Response) => {
   }
 });
 
-// flip  image
+// convert image to grayscale
 
+
+// flip  image
+routes.get("/flip", async (req: express.Request, res: express.Response) => {
+  try {
+    const image = `${req.query.filename}` + ".jpg";
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir);
+    }
+    if (fs.existsSync("assets/" + image)) {
+      sharp("assets/" + image)
+        .flip()
+        .toBuffer(function (err, outputBuffer, info) {
+          if (err)
+            res
+              .status(400)
+              .json({ error: `${err}`, message: "Error flipping image !" });
+          if (info && outputBuffer) {
+            const rotImg = Buffer.from(outputBuffer);
+            fs.writeFileSync(
+              `thumbs/flipped_${info.width}x${info.height}_${image}`,
+              rotImg
+            );
+            res.status(200).json({
+              message: "Flipped image !",
+              dimension: `${info.width}x${info.height}`,
+            });
+          }
+        });
+    } else {
+      res.status(400).json({ message: "Image not found in assets !" });
+    }
+  } catch (err) {
+    res.status(400).json({ message: `${err}` });
+  }
+});
 //  sharpen image
 
 // blur image
@@ -125,7 +161,6 @@ routes.get("/rotate", async (req: express.Request, res: express.Response) => {
 
 // produce negative of image
 
-// convert image to grayscale
 
 //  resize image to a different format
 
