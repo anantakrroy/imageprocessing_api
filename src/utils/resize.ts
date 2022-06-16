@@ -10,6 +10,9 @@ import Info from "../interface/info";
  * @return {Promise<Object>}
  */
 
+const dir = "thumbs";
+const subDir = "resizedImages";
+
 const resize = async (
   filename: string,
   width: number,
@@ -20,7 +23,7 @@ const resize = async (
       width: width,
       height: height,
     })
-    .toFile(`./thumbs/${width}x${height}_${filename}`);
+    .toFile(`./${dir}/${subDir}/${width}x${height}_${filename}`);
   return promise;
 };
 

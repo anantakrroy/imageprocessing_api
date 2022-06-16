@@ -21,24 +21,26 @@ routes.get("/resize", async (req: express.Request, res: express.Response) => {
   const filename = req.query.filename + ".jpg";
   const width = Number(req.query.width as unknown);
   const height = Number(req.query.height as unknown);
+  const subDir = "resizedImages";
   try {
-    if (!fs.existsSync("./" + dir)) fs.mkdirSync(dir);
+    if (!fs.existsSync(`./${dir}/${subDir}`))
+      fs.mkdirSync(`${dir}/${subDir}`, { recursive: true });
     // If image already exists, read from the disk, no processing done
-    if (fs.existsSync(`./${dir}/${width}x${height}_${filename}`)) {
-      const file = fs.readFileSync(`./${dir}/${width}x${height}_${filename}`, {
+    if (fs.existsSync(`./${dir}/${subDir}/${width}x${height}_${filename}`)) {
+      const file = fs.readFileSync(`./${dir}/${subDir}/${width}x${height}_${filename}`, {
         encoding: "base64",
       });
       const image = Buffer.from(file, "base64");
       res.sendFile(
         `${width}x${height}_${filename}`,
         {
-          root: "thumbs",
+          root: `${dir}/${subDir}`,
           headers: {
             "Content-Type": "image/jpg",
             "Content-Length": image.length,
           },
         },
-        function(err){
+        function (err) {
           if (err) {
             res.status(400).json({
               error: err.name,
@@ -87,15 +89,15 @@ routes.get("/rotate", async (req: express.Request, res: express.Response) => {
   try {
     const image = `${req.query.filename}` + ".jpg";
     const angle = Number(req.query.angle as string);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir);
-    }
+    const subDir = "rotatedImages";
+    if (!fs.existsSync(`./${dir}/${subDir}`))
+      fs.mkdirSync(`${dir}/${subDir}`, { recursive: true });
     if (fs.existsSync("assets/" + image)) {
       const rotdata = await rotate(image, angle);
       res.json({
-        "message" : `Image rotated successfully by ${angle} degrees`,
-        ...rotdata 
-      })
+        message: `Image rotated successfully by ${angle} degrees`,
+        ...rotdata,
+      });
     } else {
       res.status(400).json({ message: "Image not found in assets !" });
     }
@@ -105,7 +107,6 @@ routes.get("/rotate", async (req: express.Request, res: express.Response) => {
 });
 
 // convert image to grayscale
-
 
 // flip  image
 routes.get("/flip", async (req: express.Request, res: express.Response) => {
@@ -148,7 +149,6 @@ routes.get("/flip", async (req: express.Request, res: express.Response) => {
 // modulate image
 
 // produce negative of image
-
 
 //  resize image to a different format
 
