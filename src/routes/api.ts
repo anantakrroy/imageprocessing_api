@@ -2,9 +2,11 @@ import express from "express";
 import fs from "fs";
 import { promises as fspromises } from "fs";
 import resize from "../utils/resize";
+import rotate from "../utils/rotate";
 import metadata from "../utils/metadata";
 import Info from "../interface/info";
 import sharp from "sharp";
+import { info } from "console";
 
 const routes = express.Router();
 const dir = "thumbs"; // Root folder to save resized images
@@ -89,25 +91,11 @@ routes.get("/rotate", async (req: express.Request, res: express.Response) => {
       fs.mkdirSync(dir);
     }
     if (fs.existsSync("assets/" + image)) {
-      sharp("assets/" + image)
-        .rotate(angle)
-        .toBuffer(function (err, outputBuffer, info) {
-          if (err)
-            res
-              .status(400)
-              .json({ error: `${err}`, message: "Error rotating image !" });
-          if (info && outputBuffer) {
-            const rotImg = Buffer.from(outputBuffer);
-            fs.writeFileSync(
-              `thumbs/rotated_${info.width}x${info.height}_${image}`,
-              rotImg
-            );
-            res.status(200).json({
-              message: "Rotated image !",
-              dimension: `${info.width}x${info.height}`,
-            });
-          }
-        });
+      const rotdata = await rotate(image, angle);
+      res.json({
+        "message" : `Image rotated successfully by ${angle} degrees`,
+        ...rotdata 
+      })
     } else {
       res.status(400).json({ message: "Image not found in assets !" });
     }
