@@ -4,9 +4,12 @@ import { promises as fspromises } from "fs";
 import resize from "../utils/resize";
 import rotate from "../utils/rotate";
 import metadata from "../utils/metadata";
+import flip from "../utils/flip";
+import blur from "../utils/blur";
 import Info from "../interface/info";
 import sharp from "sharp";
 import { info } from "console";
+import grayscale from "../utils/grayscale";
 
 const routes = express.Router();
 const dir = "thumbs"; // Root folder to save resized images
@@ -27,9 +30,12 @@ routes.get("/resize", async (req: express.Request, res: express.Response) => {
       fs.mkdirSync(`${dir}/${subDir}`, { recursive: true });
     // If image already exists, read from the disk, no processing done
     if (fs.existsSync(`./${dir}/${subDir}/${width}x${height}_${filename}`)) {
-      const file = fs.readFileSync(`./${dir}/${subDir}/${width}x${height}_${filename}`, {
-        encoding: "base64",
-      });
+      const file = fs.readFileSync(
+        `./${dir}/${subDir}/${width}x${height}_${filename}`,
+        {
+          encoding: "base64",
+        }
+      );
       const image = Buffer.from(file, "base64");
       res.sendFile(
         `${width}x${height}_${filename}`,
@@ -107,51 +113,75 @@ routes.get("/rotate", async (req: express.Request, res: express.Response) => {
 });
 
 // convert image to grayscale
+routes.get("/grayscale", async (req: express.Request, res: express.Response) => {
+  try {
+    const image = `${req.query.filename}` + ".jpg";
+    const subDir = "grscaleImages";
+    if (!fs.existsSync(`./${dir}/${subDir}`))
+      fs.mkdirSync(`${dir}/${subDir}`, { recursive: true });
+      if (fs.existsSync("assets/" + image)) {
+        const graydata = await grayscale(image);
+        res.json({
+          message: `Image color changed to grayscale`,
+          ...graydata,
+        });
+      } else {
+        res.status(400).json({ message: "Image not found in assets !" });
+      }
+  } catch (err) {
+    res.status(400).json({ message: `${err}` });
+  }
+});
+
 
 // flip  image
 routes.get("/flip", async (req: express.Request, res: express.Response) => {
   try {
     const image = `${req.query.filename}` + ".jpg";
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir);
-    }
-    if (fs.existsSync("assets/" + image)) {
-      sharp("assets/" + image)
-        .flip()
-        .toBuffer(function (err, outputBuffer, info) {
-          if (err)
-            res
-              .status(400)
-              .json({ error: `${err}`, message: "Error flipping image !" });
-          if (info && outputBuffer) {
-            const rotImg = Buffer.from(outputBuffer);
-            fs.writeFileSync(
-              `thumbs/flipped_${info.width}x${info.height}_${image}`,
-              rotImg
-            );
-            res.status(200).json({
-              message: "Flipped image !",
-              dimension: `${info.width}x${info.height}`,
-            });
-          }
+    const subDir = "flippedImages";
+    if (!fs.existsSync(`./${dir}/${subDir}`))
+      fs.mkdirSync(`${dir}/${subDir}`, { recursive: true });
+      if (fs.existsSync("assets/" + image)) {
+        const flipdata = await flip(image);
+        res.json({
+          message: `Image flipped successfully along vertical Y axis`,
+          ...flipdata,
         });
-    } else {
-      res.status(400).json({ message: "Image not found in assets !" });
-    }
+      } else {
+        res.status(400).json({ message: "Image not found in assets !" });
+      }
   } catch (err) {
     res.status(400).json({ message: `${err}` });
   }
 });
-//  sharpen image
+
 
 // blur image
+routes.get("/blur", async (req: express.Request, res: express.Response) => {
+  try {
+    const image = `${req.query.filename}` + ".jpg";
+    const sigma = Number(`${req.query.sigma}`);
+    const subDir = "blurredImages";
+    if (!fs.existsSync(`./${dir}/${subDir}`))
+      fs.mkdirSync(`${dir}/${subDir}`, { recursive: true });
+      if (fs.existsSync("assets/" + image)) {
+        const blurdata = await blur(image, sigma);
+        res.json({
+          message: `Image blurred successfully`,
+          ...blurdata,
+        });
+      } else {
+        res.status(400).json({ message: "Image not found in assets !" });
+      }
+  } catch (err) {
+    res.status(400).json({ message: `${err}` });
+  }
+});
 
-// modulate image
 
-// produce negative of image
 
 //  resize image to a different format
 
-// pad image with custom color
+
 
 export default routes;
