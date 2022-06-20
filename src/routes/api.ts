@@ -1,15 +1,13 @@
 import express from "express";
 import fs from "fs";
-import { promises as fspromises } from "fs";
 import resize from "../utils/resize";
 import rotate from "../utils/rotate";
 import metadata from "../utils/metadata";
 import flip from "../utils/flip";
 import blur from "../utils/blur";
 import Info from "../interface/info";
-import sharp from "sharp";
-import { info } from "console";
 import grayscale from "../utils/grayscale";
+import direxists from "../middlewares/direxists";
 
 const routes = express.Router();
 const dir = "thumbs"; // Root folder to save resized images
@@ -20,14 +18,13 @@ routes.get("/", (req: express.Request, res: express.Response) => {
 });
 
 // resize image only jpg
-routes.get("/resize", async (req: express.Request, res: express.Response) => {
+routes.get("/resize",direxists, async (req: express.Request, res: express.Response) => {
   const filename = req.query.filename + ".jpg";
   const width = Number(req.query.width as unknown);
   const height = Number(req.query.height as unknown);
   const subDir = "resizedImages";
   try {
-    if (!fs.existsSync(`./${dir}/${subDir}`))
-      fs.mkdirSync(`${dir}/${subDir}`, { recursive: true });
+    
     // If image already exists, read from the disk, no processing done
     if (fs.existsSync(`./${dir}/${subDir}/${width}x${height}_${filename}`)) {
       const file = fs.readFileSync(
@@ -91,13 +88,11 @@ routes.get(
 );
 
 // rotate  image --- OPTIONAL
-routes.get("/rotate", async (req: express.Request, res: express.Response) => {
+routes.get("/rotate",direxists, async (req: express.Request, res: express.Response) => {
   try {
     const image = `${req.query.filename}` + ".jpg";
     const angle = Number(req.query.angle as string);
-    const subDir = "rotatedImages";
-    if (!fs.existsSync(`./${dir}/${subDir}`))
-      fs.mkdirSync(`${dir}/${subDir}`, { recursive: true });
+    
     if (fs.existsSync("assets/" + image)) {
       const rotdata = await rotate(image, angle);
       res.json({
@@ -113,12 +108,10 @@ routes.get("/rotate", async (req: express.Request, res: express.Response) => {
 });
 
 // convert image to grayscale
-routes.get("/grayscale", async (req: express.Request, res: express.Response) => {
+routes.get("/grayscale",direxists, async (req: express.Request, res: express.Response) => {
   try {
     const image = `${req.query.filename}` + ".jpg";
-    const subDir = "grscaleImages";
-    if (!fs.existsSync(`./${dir}/${subDir}`))
-      fs.mkdirSync(`${dir}/${subDir}`, { recursive: true });
+    
       if (fs.existsSync("assets/" + image)) {
         const graydata = await grayscale(image);
         res.json({
@@ -135,12 +128,10 @@ routes.get("/grayscale", async (req: express.Request, res: express.Response) => 
 
 
 // flip  image
-routes.get("/flip", async (req: express.Request, res: express.Response) => {
+routes.get("/flip",direxists, async (req: express.Request, res: express.Response) => {
   try {
     const image = `${req.query.filename}` + ".jpg";
-    const subDir = "flippedImages";
-    if (!fs.existsSync(`./${dir}/${subDir}`))
-      fs.mkdirSync(`${dir}/${subDir}`, { recursive: true });
+    
       if (fs.existsSync("assets/" + image)) {
         const flipdata = await flip(image);
         res.json({
@@ -157,13 +148,11 @@ routes.get("/flip", async (req: express.Request, res: express.Response) => {
 
 
 // blur image
-routes.get("/blur", async (req: express.Request, res: express.Response) => {
+routes.get("/blur",direxists, async (req: express.Request, res: express.Response) => {
   try {
     const image = `${req.query.filename}` + ".jpg";
     const sigma = Number(`${req.query.sigma}`);
-    const subDir = "blurredImages";
-    if (!fs.existsSync(`./${dir}/${subDir}`))
-      fs.mkdirSync(`${dir}/${subDir}`, { recursive: true });
+    
       if (fs.existsSync("assets/" + image)) {
         const blurdata = await blur(image, sigma);
         res.json({

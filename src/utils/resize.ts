@@ -1,7 +1,6 @@
 import sharp from "sharp";
 import Info from "../interface/info";
 
-// resize to specific width and height
 /**
  * @param {number} width
  * @param {number} height

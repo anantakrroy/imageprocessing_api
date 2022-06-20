@@ -1,6 +1,13 @@
 import sharp from "sharp";
 import Info from "../interface/info";
 
+/**
+ * @param {string} filename
+ * @param {number} sigma
+ *
+ * @return {Promise<Object>}
+ */
+
 const dir = `thumbs`;
 const subDir = `blurredImages`;
 

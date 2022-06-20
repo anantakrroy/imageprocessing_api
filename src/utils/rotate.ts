@@ -1,6 +1,14 @@
 import sharp from "sharp";
 import Info from "../interface/info";
 
+/**
+ * @param {number} angle
+ * @param {string} filename
+ *
+ * @return {Promise<Object>}
+ */
+
+
 const dir = `thumbs`;
 const subDir = `rotatedImages`;
 
