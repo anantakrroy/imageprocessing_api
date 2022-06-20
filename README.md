@@ -9,7 +9,7 @@ The following methods are implemented in the API in v1.0.0
 - [GNU General Purpose License v3.0](https://github.com/anantakrroy/imageprocessing_api/blob/master/LICENSE.md)
 
 ## Run API endpoints via Postman
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/2cbd79f8495f3fa99527?action=collection%2Fimport)
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/3264371-cc0a02a6-3ef4-46a7-8f59-7ca31e12cb75?action=collection%2Ffork&collection-url=entityId%3D3264371-cc0a02a6-3ef4-46a7-8f59-7ca31e12cb75%26entityType%3Dcollection%26workspaceId%3D76c3e00a-101c-45b3-9f32-2ea8853c3fed)
 
 ## Methods
 
