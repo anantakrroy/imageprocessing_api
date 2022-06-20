@@ -167,10 +167,4 @@ routes.get("/blur",direxists, async (req: express.Request, res: express.Response
   }
 });
 
-
-
-//  resize image to a different format
-
-
-
 export default routes;
