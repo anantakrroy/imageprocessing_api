@@ -32,3 +32,49 @@ The following methods are implemented in the API in v1.0.0
 | --- | --- |
 | filename | <code>string</code> |
 
+
+- <a name="blur">Blur image using sigma value between 0.3 to 1000
+  </a>
+
+`blur(filename, sigma)` ⇒ <code>Promise.&lt;Object&gt;</code>
+**Kind**: global variable
+
+| Param | Type |
+| --- | --- |
+| filename | <code>string</code> |
+| sigma | <code>number</code> |
+
+
+- <a name="flip">Flip image along vertical Y axis
+  </a>
+
+`flip(filename)` ⇒ <code>Promise.&lt;Object&gt;</code>
+**Kind**: global variable
+
+| Param | Type |
+| --- | --- |
+| filename | <code>string</code> |
+
+
+- <a name="rotate">Rotate the image by provided angle</a>
+
+`rotate(filename, angle)` ⇒ <code>Promise.&lt;Object&gt;</code>
+**Kind**: global variable
+
+
+| Param | Type |
+| --- | --- |
+| filename | <code>string</code> |
+| angle | <code>number</code> |
+
+- <a name="grayscale">Change color composition of colored image to grayscale</a>
+
+`grayscale(filename, sigma)` ⇒ <code>Promise.&lt;Object&gt;</code>
+**Kind**: global variable
+
+
+| Param | Type |
+| --- | --- |
+| filename | <code>string</code> |
+| sigma | <code>number between 0.3 and 1000</code> |
+
