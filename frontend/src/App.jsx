@@ -19,6 +19,7 @@ function App() {
 
   // Image upload
   const handleUpload = async (e) => {
+    setSelected(null);
     const file = e.target.files[0];
     if (!file || file.type !== "image/jpeg") {
       setError("Invalid file format !! Only .jpg files are allowed.");
@@ -67,24 +68,9 @@ function App() {
       <input type="file" accept=".jpg" onChange={handleUpload} />
       {error && <p style={{ color: "yellow" }}>{error}</p>}
 
-      <div className="gallery">
-        {images.map((img, idx) => {
-          console.log(`Image >>> ${img}`)
-          return (
-            <img
-              key={idx}
-              src={`http://localhost:3000/gallery/${img}`}
-              alt=""
-              onClick={() => setSelected(img)}
-              className={selected === img ? "selected" : ""}
-            />
-          );
-        })}
-      </div>
-
       {selected && (
         <form onSubmit={handleResizeSubmit}>
-          <h3>Resize "{selected}"</h3>
+          {selected ? <h3>Resize "{selected}"</h3> : <></>}
           <label>
             Width:
             <input
@@ -117,6 +103,21 @@ function App() {
           </a>
         </p>
       )}
+
+      <div className="gallery">
+        {images.map((img, idx) => {
+          console.log(`Image >>> ${img}`)
+          return (
+            <img
+              key={idx}
+              src={`http://localhost:3000/gallery/${img}`}
+              alt=""
+              onClick={() => setSelected(img)}
+              className={`images {selected === img ? "selected" : ""}`}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }
