@@ -17,7 +17,7 @@ const resize = async (
   width: number,
   height: number
 ): Promise<Info> => {
-  const promise = await sharp(`gallery/${filename}`)
+  const promise = await sharp(`build/gallery/${filename}`)
     .resize({
       width: width,
       height: height,
