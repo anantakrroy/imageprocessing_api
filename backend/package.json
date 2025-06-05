@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run build && node build/index",
     "build": "npx tsc  && npm run copy-gallery",
-    "copy-gallery": "xcopy gallery build\\gallery /E /I /Y",
+    "copy-gallery": "cpy gallery/*.jpg build/gallery",
     "test": "npm run build && jasmine",
     "lint": "eslint **/*.ts",
     "prettier": "npx prettier --write ."
@@ -38,6 +38,7 @@
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.27.1",
     "@typescript-eslint/parser": "^5.27.1",
+    "cpy-cli": "^5.0.0",
     "eslint": "^8.17.0",
     "eslint-plugin-react": "^7.30.0",
     "jasmine-spec-reporter": "^7.0.0",
