@@ -1,12 +1,15 @@
-# React + Vite
+# React Image Resizer app - Brief walkaround
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+- User can resize images to custom width x height . Values are entered in the frontend form.
+- Only .jpg images are allowed for upload.
+- User can select images from starter images already available in the application OR upload new images.
+- **✅ No page refresh on image upload. User may need to scroll to find the latest uploaded image**
+- ✅ Resized image url is available once the resizing is completed. Clicking it opens the resized image in a new browser tab.
 
-Currently, two official plugins are available:
+## Project setup instructions
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Start the API server by navigating to the `backend` folder and execute `npm start` in the terminal.
 
-## Expanding the ESLint configuration
+- Start the react application by navigating to the `frontend` folder and execute `npm run dev` in the terminal.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Express server runs on port 3000 and React app on port 5173 on the localhost.
