@@ -9,8 +9,8 @@ import Info from "../interface/info";
  * @return {Promise<Object>}
  */
 
-const dir = "thumbnails";
-const subDir = "resizedImages";
+const dir = "build";
+const subDir = "thumbnails/resizedImages";
 
 const resize = async (
   filename: string,

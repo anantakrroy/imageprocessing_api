@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import axios from "axios";
 
 const API_URL = "http://localhost:3000/api/images";
 
@@ -35,7 +36,7 @@ function App() {
     setImages((prev) => [...prev, data.filename]);
   };
 
-  const handleResizeSubmit = (e) => {
+  const handleResizeSubmit = async (e) => {
     e.preventDefault();
     if (!selected || !dimensions.width || !dimensions.height) return;
     console.log(
@@ -43,8 +44,15 @@ function App() {
       dimensions.width,
       dimensions.height
     );
-    const url = `${API_URL}/resize?filename=${selected}&width=${dimensions.width}&height=${dimensions.height}`;
-    setResizedUrl(url);
+    
+    const requestUrl = `${API_URL}/resize?filename=${selected}&width=${dimensions.width}&height=${dimensions.height}`;
+
+    const response = await axios.get(requestUrl)
+
+    console.log(response)
+
+    const resizedUrl = `${response.data.url}`;
+    setResizedUrl(resizedUrl);
   };
 
   return (

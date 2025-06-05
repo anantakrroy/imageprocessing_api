@@ -12,7 +12,7 @@ import direxists from "../middlewares/direxists";
 import path from "path";
 
 const routes = express.Router();
-const dir = "thumbnails"; // Root folder to save resized images
+const dir = "build"; // Root folder to save resized images
 
 // Home route
 routes.get("/", (req: express.Request, res: express.Response) => {
@@ -33,13 +33,16 @@ routes.post('/upload', upload.single('image'), (req, res) => {
 });
 
 // resize image only jpg
-routes.get("/resize",direxists, async (req: express.Request, res: express.Response) => {
+routes.get("/resize", direxists, async (req: express.Request, res: express.Response) => {
   const filename = String(req.query.filename);
   const width = Number(req.query.width as unknown);
   const height = Number(req.query.height as unknown);
-  const subDir = "resizedImages";
+  const subDir = "thumbnails/resizedImages";
+  const outputFilename = `${width}x${height}_${filename}`
+  const outputPath = path.join("thumbnails/resizedImages/", outputFilename);
+
   try {
-    
+
     // If image already exists, read from the disk, no processing done
     if (fs.existsSync(`./${dir}/${subDir}/${width}x${height}_${filename}`)) {
       const file = fs.readFileSync(
@@ -48,36 +51,41 @@ routes.get("/resize",direxists, async (req: express.Request, res: express.Respon
           encoding: "base64",
         }
       );
-      const image = Buffer.from(file, "base64");
-      res.sendFile(
-        `${width}x${height}_${filename}`,
-        {
-          root: `${dir}/${subDir}`,
-          headers: {
-            "Content-Type": "image/jpg",
-            "Content-Length": image.length,
-          },
-        },
-        function (err) {
-          if (err) {
-            res.status(400).json({
-              error: err.name,
-              detail: err.message,
-            });
-          } else {
-            res.status(200).end();
-          }
-        }
-      );
+      // const image = Buffer.from(file, "base64");
+      // res.sendFile(
+      //   `${width}x${height}_${filename}`,
+      //   {
+      //     root: `${dir}/${subDir}`,
+      //     headers: {
+      //       "Content-Type": "image/jpg",
+      //       "Content-Length": image.length,
+      //     },
+      //   },
+      //   function (err) {
+      //     if (err) {
+      //       res.status(400).json({
+      //         error: err.name,
+      //         detail: err.message,
+      //       });
+      //     } else {
+      //       res.status(200).end();
+      //     }
+      //   }
+      // );
+      res.json({
+        message: "File resize successful",
+        url: `${outputPath}`
+      })
     } else {
       console.log('Resize API endpoint hit.....');
       console.log(`Current image dimensions >>>> Width : ${width} Height : ${height} and filename >>>> ${filename}`);
 
-      
+
       await resize(filename, width, height)
         .then((info: Info) =>
           res.json({
             message: "File resize successful",
+            url: outputPath,
             ...info
           })
         )
@@ -107,11 +115,11 @@ routes.get(
 );
 
 // rotate  image --- OPTIONAL
-routes.get("/rotate",direxists, async (req: express.Request, res: express.Response) => {
+routes.get("/rotate", direxists, async (req: express.Request, res: express.Response) => {
   try {
     const image = `${req.query.filename}` + ".jpg";
     const angle = Number(req.query.angle as string);
-    
+
     if (fs.existsSync("assets/" + image)) {
       const rotdata = await rotate(image, angle);
       res.json({
@@ -127,19 +135,19 @@ routes.get("/rotate",direxists, async (req: express.Request, res: express.Respon
 });
 
 // convert image to grayscale
-routes.get("/grayscale",direxists, async (req: express.Request, res: express.Response) => {
+routes.get("/grayscale", direxists, async (req: express.Request, res: express.Response) => {
   try {
     const image = `${req.query.filename}` + ".jpg";
-    
-      if (fs.existsSync("assets/" + image)) {
-        const graydata = await grayscale(image);
-        res.json({
-          message: `Image color changed to grayscale`,
-          ...graydata,
-        });
-      } else {
-        res.status(400).json({ message: "Image not found in assets !" });
-      }
+
+    if (fs.existsSync("assets/" + image)) {
+      const graydata = await grayscale(image);
+      res.json({
+        message: `Image color changed to grayscale`,
+        ...graydata,
+      });
+    } else {
+      res.status(400).json({ message: "Image not found in assets !" });
+    }
   } catch (err) {
     res.status(400).json({ message: `${err}` });
   }
@@ -147,19 +155,19 @@ routes.get("/grayscale",direxists, async (req: express.Request, res: express.Res
 
 
 // flip  image
-routes.get("/flip",direxists, async (req: express.Request, res: express.Response) => {
+routes.get("/flip", direxists, async (req: express.Request, res: express.Response) => {
   try {
     const image = `${req.query.filename}` + ".jpg";
-    
-      if (fs.existsSync("assets/" + image)) {
-        const flipdata = await flip(image);
-        res.json({
-          message: `Image flipped successfully along vertical Y axis`,
-          ...flipdata,
-        });
-      } else {
-        res.status(400).json({ message: "Image not found in assets !" });
-      }
+
+    if (fs.existsSync("assets/" + image)) {
+      const flipdata = await flip(image);
+      res.json({
+        message: `Image flipped successfully along vertical Y axis`,
+        ...flipdata,
+      });
+    } else {
+      res.status(400).json({ message: "Image not found in assets !" });
+    }
   } catch (err) {
     res.status(400).json({ message: `${err}` });
   }
@@ -167,20 +175,20 @@ routes.get("/flip",direxists, async (req: express.Request, res: express.Response
 
 
 // blur image
-routes.get("/blur",direxists, async (req: express.Request, res: express.Response) => {
+routes.get("/blur", direxists, async (req: express.Request, res: express.Response) => {
   try {
     const image = `${req.query.filename}` + ".jpg";
     const sigma = Number(`${req.query.sigma}`);
-    
-      if (fs.existsSync("assets/" + image)) {
-        const blurdata = await blur(image, sigma);
-        res.json({
-          message: `Image blurred successfully`,
-          ...blurdata,
-        });
-      } else {
-        res.status(400).json({ message: "Image not found in assets !" });
-      }
+
+    if (fs.existsSync("assets/" + image)) {
+      const blurdata = await blur(image, sigma);
+      res.json({
+        message: `Image blurred successfully`,
+        ...blurdata,
+      });
+    } else {
+      res.status(400).json({ message: "Image not found in assets !" });
+    }
   } catch (err) {
     res.status(400).json({ message: `${err}` });
   }
