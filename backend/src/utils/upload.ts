@@ -1,8 +1,9 @@
 import multer from "multer";
 import path from "path";
 
+console.log('DIRNAME in UPLOAD middleware >>>> ', __dirname)
 const storage = multer.diskStorage({
-  destination: (req: Express.Request, file: Express.Multer.File, cb) => cb(null, path.join(__dirname, '../../gallery')),
+  destination: (req: Express.Request, file: Express.Multer.File, cb) => cb(null, path.join(__dirname, '../gallery')),
   filename: (req, file, cb) => cb(null, Date.now() + '-' + file.originalname),
 });
 

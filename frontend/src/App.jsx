@@ -15,12 +15,13 @@ function App() {
     fetch(`${API_URL}/gallery`)
       .then((res) => res.json())
       .then(setImages);
-  }, []);
+  },[]);
 
+  // Image upload
   const handleUpload = async (e) => {
     const file = e.target.files[0];
     if (!file || file.type !== "image/jpeg") {
-      setError("Only .jpg files are allowed.");
+      setError("Invalid file format !! Only .jpg files are allowed.");
       return;
     }
     setError("");
@@ -33,9 +34,13 @@ function App() {
       body: formData,
     });
     const data = await res.json();
-    setImages((prev) => [...prev, data.filename]);
+
+    const updatedImages = await fetch(`${API_URL}/gallery`).then(res => res.json());
+    
+    setImages(updatedImages);
   };
 
+  // Image resize form
   const handleResizeSubmit = async (e) => {
     e.preventDefault();
     if (!selected || !dimensions.width || !dimensions.height) return;
@@ -57,10 +62,10 @@ function App() {
 
   return (
     <div className="App">
-      <h1>📷 Image Gallery</h1>
+      <h1>Image Gallery</h1>
 
       <input type="file" accept=".jpg" onChange={handleUpload} />
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <p style={{ color: "yellow" }}>{error}</p>}
 
       <div className="gallery">
         {images.map((img, idx) => {
@@ -107,7 +112,7 @@ function App() {
       {resizedUrl && (
         <p>
           Resized Image URL:{" "}
-          <a href={resizedUrl} target="_blank">
+          <a href={resizedUrl} target="_blank" rel="noreferrer">
             {resizedUrl}
           </a>
         </p>

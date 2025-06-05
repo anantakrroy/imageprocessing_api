@@ -21,6 +21,7 @@ routes.get("/", (req: express.Request, res: express.Response) => {
 
 // Get gallery images
 routes.get("/gallery", async (req: express.Request, res: express.Response) => {
+  console.log(`Dirnmae ::: ${__dirname}`)
   const dir = path.join(__dirname, '../gallery');
   const files = fs.readdirSync(dir).filter(file => /\.(jpe?g)$/i.test(file));
   res.json(files);
@@ -39,7 +40,7 @@ routes.get("/resize", direxists, async (req: express.Request, res: express.Respo
   const height = Number(req.query.height as unknown);
   const subDir = "thumbnails/resizedImages";
   const outputFilename = `${width}x${height}_${filename}`
-  const outputPath = path.join(`/${subDir}/${outputFilename}`);
+  // const outputPath = path.join(`/${subDir}/${outputFilename}`);
   const resizedUrl = `http://localhost:3000/resize/${outputFilename}`;
 
   try {
