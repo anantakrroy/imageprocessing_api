@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "npm run build && node build/index",
-    "build": "npx tsc && npm run copy-gallery",
+    "build": "npx tsc  && npm run copy-gallery",
     "copy-gallery": "xcopy gallery build\\gallery /E /I /Y",
     "test": "npm run build && jasmine",
     "lint": "eslint **/*.ts",
