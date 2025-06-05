@@ -21,7 +21,7 @@ routes.get("/", (req: express.Request, res: express.Response) => {
 
 // Get gallery images
 routes.get("/gallery", async (req: express.Request, res: express.Response) => {
-  console.log(`Dirnmae ::: ${__dirname}`)
+  // console.log(`Dirnmae ::: ${__dirname}`)
   const dir = path.join(__dirname, '../gallery');
   const files = fs.readdirSync(dir).filter(file => /\.(jpe?g)$/i.test(file));
   res.json(files);
@@ -52,8 +52,8 @@ routes.get("/resize", direxists, async (req: express.Request, res: express.Respo
         url: `${resizedUrl}`
       })
     } else {
-      console.log('Resize API endpoint hit.....');
-      console.log(`Current image dimensions >>>> Width : ${width} Height : ${height} and filename >>>> ${filename}`);
+      // console.log('Resize API endpoint hit.....');
+      // console.log(`Current image dimensions >>>> Width : ${width} Height : ${height} and filename >>>> ${filename}`);
 
 
       await resize(filename, width, height)

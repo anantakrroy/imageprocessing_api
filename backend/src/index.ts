@@ -7,10 +7,10 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 const gallery = path.join(__dirname, "gallery");
-console.log('Gallery path >>> ', gallery);
+// console.log('Gallery path >>> ', gallery);
 const thumbnails = path.join(__dirname, "thumbnails/resizedImages");
 
-console.log('DIRNAME >>>>> > ', __dirname)
+// console.log('DIRNAME >>>>> > ', __dirname)
 
 app.use(cors({
   origin: "http://localhost:5173"
