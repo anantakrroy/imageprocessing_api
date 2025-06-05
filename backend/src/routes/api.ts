@@ -39,42 +39,16 @@ routes.get("/resize", direxists, async (req: express.Request, res: express.Respo
   const height = Number(req.query.height as unknown);
   const subDir = "thumbnails/resizedImages";
   const outputFilename = `${width}x${height}_${filename}`
-  const outputPath = path.join("thumbnails/resizedImages/", outputFilename);
+  const outputPath = path.join(`/${subDir}/${outputFilename}`);
+  const resizedUrl = `http://localhost:3000/resize/${outputFilename}`;
 
   try {
 
     // If image already exists, read from the disk, no processing done
     if (fs.existsSync(`./${dir}/${subDir}/${width}x${height}_${filename}`)) {
-      const file = fs.readFileSync(
-        `./${dir}/${subDir}/${width}x${height}_${filename}`,
-        {
-          encoding: "base64",
-        }
-      );
-      // const image = Buffer.from(file, "base64");
-      // res.sendFile(
-      //   `${width}x${height}_${filename}`,
-      //   {
-      //     root: `${dir}/${subDir}`,
-      //     headers: {
-      //       "Content-Type": "image/jpg",
-      //       "Content-Length": image.length,
-      //     },
-      //   },
-      //   function (err) {
-      //     if (err) {
-      //       res.status(400).json({
-      //         error: err.name,
-      //         detail: err.message,
-      //       });
-      //     } else {
-      //       res.status(200).end();
-      //     }
-      //   }
-      // );
       res.json({
         message: "File resize successful",
-        url: `${outputPath}`
+        url: `${resizedUrl}`
       })
     } else {
       console.log('Resize API endpoint hit.....');
@@ -85,7 +59,7 @@ routes.get("/resize", direxists, async (req: express.Request, res: express.Respo
         .then((info: Info) =>
           res.json({
             message: "File resize successful",
-            url: outputPath,
+            url: resizedUrl,
             ...info
           })
         )

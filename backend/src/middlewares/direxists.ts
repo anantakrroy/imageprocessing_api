@@ -7,13 +7,13 @@ const direxists = async (
   next: express.NextFunction
 ) => {
   const path = req.path.substring(1);
-  const dir = "thumbnails";
-  let subdir!: string;
-  if (path === "resize") subdir = "resizedImages";
-  if (path === "rotate") subdir = "rotatedImages";
-  if (path === "flip") subdir = "flippedImages";
-  if (path === "blur") subdir = "blurredImages";
-  if (path === "grayscale") subdir = "grscaleImages";
+  const dir = "build";
+  let subdir = "thumbnails/";
+  if (path === "resize") subdir += "resizedImages";
+  if (path === "rotate") subdir += "rotatedImages";
+  if (path === "flip") subdir += "flippedImages";
+  if (path === "blur") subdir += "blurredImages";
+  if (path === "grayscale") subdir += "grscaleImages";
 
   if (!fs.existsSync(`./${dir}/${subdir}`))
     fs.mkdirSync(`${dir}/${subdir}`, { recursive: true });
