@@ -76,9 +76,9 @@ routes.get("/resize", direxists, validateFilename, validateDimensions, async (re
 
 //  getimage metadata
 routes.get(
-  "/metadata/:filename", validateFilename,
-  async (req: express.Request, res: express.Response) => {
-    const inputFile = path.join(__dirname, '../../gallery', `${req.params.filename}.jpg`);
+  "/metadata", validateFilename,
+  async (req: express.Request, res: express.Response) => {    
+    const inputFile = path.join(__dirname, '../../gallery', `${req.query.filename}.jpg`);
     try {
       if (fs.existsSync(inputFile)) {
         const inputImageData = await metadata(inputFile);

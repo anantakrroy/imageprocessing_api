@@ -1,14 +1,15 @@
 import sharp from "sharp";
-
 /**
  * 
  * @param {string} filename 
- * @returns {Object} 
+ * 
+ * @returns {Promise<Object>} 
  */
 
 const metadata = async(filename: string) => {
-    const data = await sharp(filename).metadata();
-    return data;
+    const promise = await sharp(filename).metadata();
+    // console.log(`Metadata >>>> ${promise.then(data => console.log(data))}`)
+    return promise;
 }
 
 export default metadata;

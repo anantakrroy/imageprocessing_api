@@ -21,7 +21,7 @@ describe("Main test suite \n", () => {
     });
 
     it("should make succesful request to /metadata route", async () => {
-      const res = await request.get(`${baseurl}/metadata/mario`);
+      const res = await request.get(`${baseurl}/metadata?filename=mario`);
       expect(res.statusCode).toEqual(200);
       expect(res.body).toEqual({
         "format": "jpeg",
