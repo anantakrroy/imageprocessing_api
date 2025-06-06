@@ -15,7 +15,7 @@ function App() {
     fetch(`${API_URL}/gallery`)
       .then((res) => res.json())
       .then(setImages);
-  },[]);
+  }, []);
 
   // Image upload
   const handleUpload = async (e) => {
@@ -36,29 +36,37 @@ function App() {
     });
     const data = await res.json();
 
-    const updatedImages = await fetch(`${API_URL}/gallery`).then(res => res.json());
-    
+    const updatedImages = await fetch(`${API_URL}/gallery`).then((res) =>
+      res.json()
+    );
+
     setImages(updatedImages);
   };
 
   // Image resize form
   const handleResizeSubmit = async (e) => {
     e.preventDefault();
-    if (!selected || !dimensions.width || !dimensions.height) return;
-    // console.log(
-    //   "Width and height sent from client  >>> ",
-    //   dimensions.width,
-    //   dimensions.height
-    // );
-    
+    setError("");
+
+    if (!selected || !dimensions.width || !dimensions.height) {
+      setError("Select an image and enter valid dimensions !");
+      return;
+    }
+
     const requestUrl = `${API_URL}/resize?filename=${selected}&width=${dimensions.width}&height=${dimensions.height}`;
 
-    const response = await axios.get(requestUrl)
-
-    // console.log(response)
-
-    const resizedUrl = `${response.data.url}`;
-    setResizedUrl(resizedUrl);
+    try {
+      const response = await axios.get(requestUrl);
+      // console.log(response)
+      const resizedUrl = `${response.data.url}`;
+      setResizedUrl(resizedUrl);
+    } catch (error) {
+      if(error.response && error.response.data && error.response.data.error) {
+        setError(error.response.data.error);
+      } else {
+        setError("Something went wrong ! Unexpected !!");
+      }
+    }
   };
 
   return (
@@ -106,7 +114,7 @@ function App() {
 
       <div className="gallery">
         {images.map((img, idx) => {
-          console.log(`Image >>> ${img}`)
+          console.log(`Image >>> ${img}`);
           return (
             <img
               key={idx}

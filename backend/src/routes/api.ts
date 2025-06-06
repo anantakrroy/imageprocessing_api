@@ -10,6 +10,9 @@ import Info from "../interface/info";
 import grayscale from "../utils/grayscale";
 import direxists from "../middlewares/direxists";
 import path from "path";
+import validateFilename from "../middlewares/validateFilename";
+import validateDimensions from "../middlewares/validateDimensions";
+import validateAngle from "../middlewares/validateAngle";
 
 const routes = express.Router();
 const dir = "build"; // Root folder to save resized images
@@ -34,7 +37,7 @@ routes.post('/upload', upload.single('image'), (req, res) => {
 });
 
 // resize image only jpg
-routes.get("/resize", direxists, async (req: express.Request, res: express.Response) => {
+routes.get("/resize", direxists, validateFilename, validateDimensions, async (req: express.Request, res: express.Response) => {
   const filename = String(req.query.filename);
   const width = Number(req.query.width as unknown);
   const height = Number(req.query.height as unknown);
@@ -73,7 +76,7 @@ routes.get("/resize", direxists, async (req: express.Request, res: express.Respo
 
 //  getimage metadata
 routes.get(
-  "/metadata/:filename",
+  "/metadata/:filename", validateFilename,
   async (req: express.Request, res: express.Response) => {
     const inputFile = path.join(__dirname, '../../gallery', `${req.params.filename}.jpg`);
     try {
@@ -90,7 +93,7 @@ routes.get(
 );
 
 // rotate  image --- OPTIONAL
-routes.get("/rotate", direxists, async (req: express.Request, res: express.Response) => {
+routes.get("/rotate", direxists, validateAngle, validateFilename, async (req: express.Request, res: express.Response) => {
   try {
     const angle = Number(req.query.angle as string);
     const inputFile = path.join(__dirname, '../../gallery', `${req.query.filename}.jpg`);
@@ -111,7 +114,7 @@ routes.get("/rotate", direxists, async (req: express.Request, res: express.Respo
 });
 
 // convert image to grayscale
-routes.get("/grayscale", direxists, async (req: express.Request, res: express.Response) => {
+routes.get("/grayscale", direxists, validateFilename, async (req: express.Request, res: express.Response) => {
   try {
     const filename = String(req.query.filename) + ".jpg";
     const inputFile = path.join(__dirname, '../../gallery', `${req.query.filename}.jpg`);
@@ -132,7 +135,7 @@ routes.get("/grayscale", direxists, async (req: express.Request, res: express.Re
 
 
 // flip  image
-routes.get("/flip", direxists, async (req: express.Request, res: express.Response) => {
+routes.get("/flip", direxists, validateFilename, async (req: express.Request, res: express.Response) => {
   try {
     const filename = String(req.query.filename) + ".jpg";
     const inputFile = path.join(__dirname, '../../gallery', `${req.query.filename}.jpg`);
@@ -153,7 +156,7 @@ routes.get("/flip", direxists, async (req: express.Request, res: express.Respons
 
 
 // blur image
-routes.get("/blur", direxists, async (req: express.Request, res: express.Response) => {
+routes.get("/blur", direxists, validateFilename, async (req: express.Request, res: express.Response) => {
   try {
     const filename = String(req.query.filename) + ".jpg";
     const inputFile = path.join(__dirname, '../../gallery', `${req.query.filename}.jpg`);
