@@ -75,7 +75,7 @@ routes.get("/resize", direxists, async (req: express.Request, res: express.Respo
 routes.get(
   "/metadata/:filename",
   async (req: express.Request, res: express.Response) => {
-    const inputFile = "./assets/" + req.params.filename + ".jpg";
+    const inputFile = path.join(__dirname, '../../gallery', `${req.params.filename}.jpg`);
     try {
       if (fs.existsSync(inputFile)) {
         const inputImageData = await metadata(inputFile);
@@ -92,11 +92,12 @@ routes.get(
 // rotate  image --- OPTIONAL
 routes.get("/rotate", direxists, async (req: express.Request, res: express.Response) => {
   try {
-    const image = `${req.query.filename}` + ".jpg";
     const angle = Number(req.query.angle as string);
+    const inputFile = path.join(__dirname, '../../gallery', `${req.query.filename}.jpg`);
+    const filename = String(req.query.filename) + ".jpg";
 
-    if (fs.existsSync("assets/" + image)) {
-      const rotdata = await rotate(image, angle);
+    if (fs.existsSync(inputFile)) {
+      const rotdata = await rotate(filename, angle);
       res.json({
         message: `Image rotated successfully by ${angle} degrees`,
         ...rotdata,
@@ -112,10 +113,11 @@ routes.get("/rotate", direxists, async (req: express.Request, res: express.Respo
 // convert image to grayscale
 routes.get("/grayscale", direxists, async (req: express.Request, res: express.Response) => {
   try {
-    const image = `${req.query.filename}` + ".jpg";
+    const filename = String(req.query.filename) + ".jpg";
+    const inputFile = path.join(__dirname, '../../gallery', `${req.query.filename}.jpg`);
 
-    if (fs.existsSync("assets/" + image)) {
-      const graydata = await grayscale(image);
+    if (fs.existsSync(inputFile)) {
+      const graydata = await grayscale(filename);
       res.json({
         message: `Image color changed to grayscale`,
         ...graydata,
@@ -132,10 +134,11 @@ routes.get("/grayscale", direxists, async (req: express.Request, res: express.Re
 // flip  image
 routes.get("/flip", direxists, async (req: express.Request, res: express.Response) => {
   try {
-    const image = `${req.query.filename}` + ".jpg";
+    const filename = String(req.query.filename) + ".jpg";
+    const inputFile = path.join(__dirname, '../../gallery', `${req.query.filename}.jpg`);
 
-    if (fs.existsSync("assets/" + image)) {
-      const flipdata = await flip(image);
+    if (fs.existsSync(inputFile)) {
+      const flipdata = await flip(filename);
       res.json({
         message: `Image flipped successfully along vertical Y axis`,
         ...flipdata,
@@ -152,11 +155,13 @@ routes.get("/flip", direxists, async (req: express.Request, res: express.Respons
 // blur image
 routes.get("/blur", direxists, async (req: express.Request, res: express.Response) => {
   try {
-    const image = `${req.query.filename}` + ".jpg";
+    const filename = String(req.query.filename) + ".jpg";
+    const inputFile = path.join(__dirname, '../../gallery', `${req.query.filename}.jpg`);
     const sigma = Number(`${req.query.sigma}`);
 
-    if (fs.existsSync("assets/" + image)) {
-      const blurdata = await blur(image, sigma);
+
+    if (fs.existsSync(inputFile)) {
+      const blurdata = await blur(filename, sigma);
       res.json({
         message: `Image blurred successfully`,
         ...blurdata,

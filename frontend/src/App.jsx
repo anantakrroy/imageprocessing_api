@@ -45,17 +45,17 @@ function App() {
   const handleResizeSubmit = async (e) => {
     e.preventDefault();
     if (!selected || !dimensions.width || !dimensions.height) return;
-    console.log(
-      "Width and height sent from client  >>> ",
-      dimensions.width,
-      dimensions.height
-    );
+    // console.log(
+    //   "Width and height sent from client  >>> ",
+    //   dimensions.width,
+    //   dimensions.height
+    // );
     
     const requestUrl = `${API_URL}/resize?filename=${selected}&width=${dimensions.width}&height=${dimensions.height}`;
 
     const response = await axios.get(requestUrl)
 
-    console.log(response)
+    // console.log(response)
 
     const resizedUrl = `${response.data.url}`;
     setResizedUrl(resizedUrl);

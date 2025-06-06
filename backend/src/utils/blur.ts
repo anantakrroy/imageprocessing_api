@@ -12,9 +12,9 @@ const dir = `thumbnails`;
 const subDir = `blurredImages`;
 
 const blur = async (filename: string, sigma: number): Promise<Info> => {
-  const promise = await sharp("assets/" + filename)
+  const promise = await sharp(`build/gallery/${filename}`)
     .blur(sigma)
-    .toFile(`${dir}/${subDir}/flipped_${filename}`);
+    .toFile(`${dir}/${subDir}/blurred_${filename}`);
   return promise;
 };
 

@@ -13,7 +13,7 @@ const dir = `thumbnails`;
 const subDir = `rotatedImages`;
 
 const rotate = async (filename: string, angle: number): Promise<Info> => {
-  const promise = await sharp("assets/" + filename)
+  const promise = await sharp(`build/gallery/${filename}`)
     .rotate(angle)
     .toFile(`${dir}/${subDir}/rotated_${angle}_${filename}`);
   return promise;

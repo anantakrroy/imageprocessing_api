@@ -5,6 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "npm run build && node build/index",
+    "nodemon:start": "nodemon --exec ts-node ./src/index.ts",
     "build": "npx tsc  && npm run copy-gallery",
     "copy-gallery": "cpy gallery/*.jpg build/gallery",
     "test": "npm run build && jasmine",
@@ -20,13 +21,8 @@
   "author": "Ananta Kumar Roy",
   "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5",
     "express": "^4.18.1",
-    "jasmine": "^4.1.0",
-    "multer": "^2.0.0",
-    "prettier": "^2.6.2",
-    "sharp": "^0.30.6",
-    "supertest": "^6.2.3"
+    "sharp": "^0.30.6"
   },
   "devDependencies": {
     "@types/cors": "^2.8.18",
@@ -38,10 +34,17 @@
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^5.27.1",
     "@typescript-eslint/parser": "^5.27.1",
+    "cors": "^2.8.5",
     "cpy-cli": "^5.0.0",
     "eslint": "^8.17.0",
     "eslint-plugin-react": "^7.30.0",
+    "jasmine": "^4.1.0",
     "jasmine-spec-reporter": "^7.0.0",
+    "multer": "^2.0.0",
+    "nodemon": "^3.1.10",
+    "prettier": "^2.6.2",
+    "supertest": "^6.2.3",
+    "ts-node": "^10.9.2",
     "typescript": "^4.7.3"
   }
 }

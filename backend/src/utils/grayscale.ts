@@ -12,9 +12,9 @@ const dir = `thumbnails`;
 const subDir = `grscaleImages`;
 
 const grayscale = async (filename: string): Promise<Info> => {
-  const promise = await sharp("assets/" + filename)
+  const promise = await sharp(`build/gallery/${filename}`)
     .grayscale()
-    .toFile(`${dir}/${subDir}/flipped_${filename}`);
+    .toFile(`${dir}/${subDir}/grayscaled_${filename}`);
   return promise;
 };
 

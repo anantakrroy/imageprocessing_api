@@ -11,7 +11,7 @@ const dir = `thumbnails`;
 const subDir = `flippedImages`;
 
 const flip = async (filename: string): Promise<Info> => {
-  const promise = await sharp("assets/" + filename)
+  const promise = await sharp(`build/gallery/${filename}`)
     .flip()
     .toFile(`${dir}/${subDir}/flipped_${filename}`);
   return promise;
